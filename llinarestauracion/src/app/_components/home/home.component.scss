@@ -1,0 +1,21 @@
+
+.mat-tab-group.mat-primary{
+    min-height: 600px;
+    max-height: 500px;
+}
+
+@media screen and (max-height: 500px) {
+    .mat-tab-group.mat-primary{
+      min-height: 200px;
+    }
+}
+@media screen and (max-height: 1200px) {
+    .mat-tab-group.mat-primary{
+        min-height: 430px;
+    }
+}
+@media screen and (max-height: 1500px) {
+    .mat-tab-group.mat-primary{
+        min-height: 700px;
+    }
+}

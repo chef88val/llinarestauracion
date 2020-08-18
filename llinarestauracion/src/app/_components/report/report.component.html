@@ -1,0 +1,157 @@
+<div class="grid-container">
+  <h2 *ngIf="!isCreatingAction">Reportes ({{dataSource.data.length}})</h2>
+  <h2 *ngIf="isCreatingAction">Items del reporte ({{dataSource2.data.length}})</h2>
+  <button mat-flat-button color="primary"(click)="createElement(true)" *ngIf="!isCreatingAction"> Nuevo reporte</button>
+  <div class="example-loading-shade" *ngIf="isLoadingResults">
+    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+  </div>
+  <!--<div class="button-row">
+        <a mat-flat-button color="primary" [routerLink]="['/add-cases']"><mat-icon>add</mat-icon> Cases</a>
+        <a mat-flat-button color="accent" [routerLink]="['/cases-stat']"><mat-icon>bar_chart</mat-icon> Statistic</a>
+      </div>-->
+  <div class="mat-elevation-n6" *ngIf="!isLoadingResults && isCreatingAction">
+    <!-- <div class="form-group">
+      <button [disabled]="loading" (click)="updateElement()" mat-flat-button color="primary">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+        Crear Reporte
+      </button>
+      <button mat-flat-button color="warn" (click)="createElement(false)" *ngIf="isCreatingAction"> Cancelar </button>
+    </div> -->
+    <form class="example-form" [formGroup]="elementForm" (ngSubmit)="onSubmit()">
+      <table class="example-full-width" cellspacing="0">
+        <tr>
+          <td>
+            <mat-form-field class="example-full-width">
+              <mat-label>Cantidad</mat-label>
+              <input matInput placeholder="Cantidad del item" 
+              [formControl]="qtyControl" type="number" min="1" />
+              <!--<div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                <div *ngIf="f.password.errors.required">Password is required</div>
+              </div>-->
+              <mat-error *ngIf="qtyControl.hasError('required')">
+                Cantidad es requerida
+              </mat-error>
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field class="example-full-width">
+              <mat-label>Item para incluir</mat-label>
+              <input matInput type="text" placeholder="Selecciona" aria-label="Number" 
+              [formControl]="itemControl"
+              [matAutocomplete]="auto">
+              <mat-autocomplete #auto="matAutocomplete">
+                <mat-option (onSelectionChange)="updateForm($event, item, 'itemControl')" 
+                  *ngFor="let item of itemsList"
+                  [value]="item.Nombre">
+                  {{item.Nombre}}
+                </mat-option>
+              </mat-autocomplete>
+              <mat-error *ngIf="itemControl.hasError('required')">
+                Nombre del item es requerido
+              </mat-error>
+            </mat-form-field>
+          </td>
+          <td>
+            <button mat-mini-fab color="primary" aria-label="Example icon button with a delete icon">
+              <mat-icon>add</mat-icon>
+            </button>
+          </td>
+        </tr>
+      </table>
+
+      <!--<button
+          class="waves-effect waves-light btn col s4"
+          *ngFor="let item of items"
+          (click)="addElementItem(item)">
+          {{ item }}
+        </button>
+      
+        <ul class="collection">
+          <li *ngFor="let item of newElementItems">
+            <span class="col s11"> {{ item }} </span
+            ><a class="col s1" (click)="removeItem(item)">x</a>
+          </li>
+        </ul>
+      
+        <button class="waves-effect waves-light btn col s12" (click)="onSubmit()">
+          Submit
+        </button>-->
+
+
+    </form>
+    <table mat-table #table2 [dataSource]="dataSource2" class="example-table" matSort matSortActive="Nombre"
+      matSortDisableClear matSortDirection="asc">
+
+      <!-- Cases Name Column -->
+      <ng-container matColumnDef="Id">
+        <th mat-header-cell *matHeaderCellDef>Nº</th>
+        <td mat-cell *matCellDef="let row">{{row.tag}}</td>
+      </ng-container>
+
+      <!-- Cases Age Column -->
+      <ng-container matColumnDef="Nombre">
+        <th mat-header-cell *matHeaderCellDef>Nombre</th>
+        <td mat-cell *matCellDef="let row">{{row.item.Nombre}}</td>
+      </ng-container>
+
+      <!-- Cases Age Column -->
+      <ng-container matColumnDef="QTY">
+        <th mat-header-cell *matHeaderCellDef>Cantidad</th>
+        <td mat-cell *matCellDef="let row">{{row.qty}}</td>
+      </ng-container>
+
+      <!-- Cases Age Column -->
+      <ng-container matColumnDef="Action">
+        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+        <td mat-cell *matCellDef="let row">
+          <button (click)="deleteElementItem(row.tag)" mat-mini-fab color="warn" aria-label="Example icon button with a delete icon">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
+      <!--[routerLink]="['/item-details/', row.id]"-->
+    </table>
+
+  </div>
+
+  <div class="mat-elevation-n6" *ngIf="!isLoadingResults && !isCreatingAction">
+    <mat-form-field>
+      <mat-label>Filter</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Fecha...">
+    </mat-form-field>
+    <table mat-table #table [dataSource]="dataSource" class="example-table" matSort matSortActive="Nombre"
+      matSortDisableClear matSortDirection="asc">
+
+      <!-- Cases Name Column -->
+      <ng-container matColumnDef="Id">
+        <th mat-header-cell *matHeaderCellDef>Nº</th>
+        <td mat-cell *matCellDef="let row">{{row.tag}}</td>
+      </ng-container>
+
+      <!-- Cases Age Column -->
+      <ng-container matColumnDef="Fecha">
+        <th mat-header-cell *matHeaderCellDef>Fecha</th>
+        <td mat-cell *matCellDef="let row">{{row.Fecha.toDate() | date:'dd/MM/yyyy'}}</td>
+      </ng-container>
+
+      <!-- Cases Age Column -->
+      <ng-container matColumnDef="Items">
+        <th mat-header-cell *matHeaderCellDef>Nº Items</th>
+        <td mat-cell *matCellDef="let row">{{row.items}}</td>
+      </ng-container>
+
+      <!-- Cases Status Column -->
+      <!--<ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let row">{{row.status}}</td>
+          </ng-container>-->
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <!--[routerLink]="['/item-details/', row.id]"-->
+    </table>
+  </div>
+</div>

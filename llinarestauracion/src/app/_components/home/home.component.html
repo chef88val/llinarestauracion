@@ -1,0 +1,24 @@
+<!--<h1>Hi {{currentUser.firstName}}!</h1>
+<p>You're logged in with Angular 8!!</p>
+<h3>All registered users:</h3>
+<ul>
+    <li *ngFor="let user of users">
+        {{user.username}} ({{user.firstName}} {{user.lastName}})
+        - <a (click)="deleteUser(user.id)" class="text-danger">Delete</a>
+    </li>
+</ul>
+
+
+
+<mat-grid-list cols="2" rowHeight="2:1">
+    <mat-grid-tile><app-items></app-items></mat-grid-tile>
+    <mat-grid-tile>2</mat-grid-tile>
+    <mat-grid-tile>3</mat-grid-tile>
+    <mat-grid-tile>4</mat-grid-tile>
+  </mat-grid-list>
+-->
+<mat-tab-group>
+    <mat-tab label="Productos"> <app-items></app-items></mat-tab>
+    <mat-tab label="Reportes" > <app-report></app-report> </mat-tab>
+    <mat-tab label="Admin"> <app-admin-portal></app-admin-portal> </mat-tab>
+  </mat-tab-group>

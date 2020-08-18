@@ -1,0 +1,102 @@
+<div class="grid-container">
+  <h2>Productos ({{dataSource.data.length}})</h2>
+  <button class="btn btn-success" (click)="addElement(true)" *ngIf="!isCreatingAction"> Nuevo Item</button>
+  <div class="example-loading-shade" *ngIf="isLoadingResults">
+    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+  </div>
+  <!--<div class="button-row">
+      <a mat-flat-button color="primary" [routerLink]="['/add-cases']"><mat-icon>add</mat-icon> Cases</a>
+      <a mat-flat-button color="accent" [routerLink]="['/cases-stat']"><mat-icon>bar_chart</mat-icon> Statistic</a>
+    </div>-->
+  <div class="mat-elevation-n6" *ngIf="!isLoadingResults && isCreatingAction">
+    <form class="example-form" [formGroup]="elementForm" (ngSubmit)="onSubmit()">
+      <table class="example-full-width" cellspacing="0">
+        <tr>
+          <td>
+            <mat-form-field class="example-full-width">
+              <mat-label>Nombre del item</mat-label>
+              <input matInput placeholder="Nombre del item" [formControl]="nombreControl" 
+              type="text"/>
+              <mat-error *ngIf="nombreControl.hasError('required')">
+                Nombre del item es requerido
+              </mat-error>
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field class="example-full-width">
+              <mat-label>Familia del item</mat-label>
+              <mat-select>
+                <mat-option [formControl]="familiaControl" [value]="fam.id" *ngFor="let fam of familyList">{{fam.Nombre}}
+                </mat-option>
+            </mat-select>
+              <mat-error *ngIf="familiaControl.hasError('required')">
+                Nombre del item es requerido
+              </mat-error>
+            </mat-form-field>
+          </td>
+          <!--<button
+        class="waves-effect waves-light btn col s4"
+        *ngFor="let item of items"
+        (click)="addElement(item)"
+      >
+        {{ item }}
+      </button>
+    
+      <ul class="collection">
+        <li *ngFor="let item of itemOrder">
+          <span class="col s11"> {{ item }} </span
+          ><a class="col s1" (click)="removeItem(item)">x</a>
+        </li>
+      </ul>
+    
+      <button class="waves-effect waves-light btn col s12" (click)="onSubmit()">
+        Submit
+      </button>-->
+
+          <td>
+
+            <button [disabled]="loading" class="btn btn-primary">
+              <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+              Crear Item
+            </button>
+            <button class="btn btn-warning" (click)="addElement(false)" *ngIf="isCreatingAction"> Cancelar </button>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+  <div class="mat-elevation-n6" *ngIf="!isLoadingResults ">
+    <mat-form-field>
+      <mat-label>Filter</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Nombre o Familia">
+    </mat-form-field>
+    <table mat-table #table [dataSource]="dataSource" class="example-table" matSort matSortActive="Nombre"
+      matSortDisableClear matSortDirection="asc">
+
+      <!-- Cases Name Column -->
+      <ng-container matColumnDef="Nombre">
+        <th mat-header-cell *matHeaderCellDef>Nombre</th>
+        <td mat-cell *matCellDef="let row">{{row.Nombre}}</td>
+      </ng-container>
+
+      <!-- Cases Age Column -->
+      <ng-container matColumnDef="familiaNombre">
+        <th mat-header-cell *matHeaderCellDef>Familia</th>
+        <td mat-cell *matCellDef="let row">{{row.familia.Nombre}}</td>
+      </ng-container>
+
+      <!-- Action Column -->
+      <!--<ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> Action </th>
+        <td mat-cell *matCellDef="let element" class="action-link"> 
+          <a (click)="openDialog('Update',element)">Edit</a> | 
+          <a (click)="openDialog('Delete',element)">Delete</a>  
+        </td>
+      </ng-container>-->
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <!--[routerLink]="['/item-details/', row.id]"-->
+    </table>
+  </div>
+</div>

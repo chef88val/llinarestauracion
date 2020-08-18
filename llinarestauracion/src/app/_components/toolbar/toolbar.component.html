@@ -1,0 +1,17 @@
+<mat-toolbar color="primary" class="fixed-header">
+  <mat-toolbar-row>
+    
+      <a class="asd" *ngIf="currentUser != null" mat-button [routerLink]="['/home']"><span><img
+          src="https://i.pinimg.com/originals/7f/cc/d4/7fccd4143a51812cfbcff26451e2a113.png"
+          style="width:50px;"></span></a>
+    <span>
+      Bienvenido, {{currentUser.email | email }}</span>
+    
+    <!--<a mat-button [routerLink]="['/Stock']">Stock</a>
+      <a mat-button [routerLink]="['/CashFlow']">CashFlow</a>
+      <a mat-button [routerLink]="['/Pedidos']">Pedidos</a>
+      <a mat-button [routerLink]="['/AdminPortal']">Administración</a>-->
+  </mat-toolbar-row>
+</mat-toolbar>
+<main>
+</main>

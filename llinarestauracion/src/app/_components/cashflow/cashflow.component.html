@@ -1,0 +1,31 @@
+
+<mat-grid-list cols="8" >
+    <mat-grid-tile
+        *ngFor="let tile of tiles"
+        [colspan]="tile.cols"
+        [rowspan]="tile.rows"
+        [style.background]="tile.color">
+         
+      <mat-card-content *ngIf="tile.text=='One'" class="dashboard-card-content">  
+          <h1>{{getTotalOfToday()}}     </h1>
+          <span>{{totalOfToday[totalOfToday.length-1]}}</span>
+        <!--<h4 *ngFor="let item of totalOfToday">{{item}}</h4>-->
+      </mat-card-content>
+      <mat-card-content *ngIf="tile.text=='Three'" class="dashboard-card-content">  
+              
+            
+          <button class="btn btn-success"  (click)="saveValue()">Guardar Venta</button>
+          <br>
+            <p>{{subText}} </p>
+      </mat-card-content>
+      <mat-card-content *ngIf="tile.text=='Two'" class="dashboard-card-content" style="width: 50%;">  
+        <div class="keypad">
+        <button class="keys" *ngFor="let num of calcu1" (click)="pressKey(num.text)">{{num.text}}</button>
+          <br>
+          <button class="keys" *ngFor="let num of calcu2" (click)="pressKey(num.text)">{{num.text}}</button>
+          <br>
+          <button class="keys" *ngFor="let num of calcu3" (click)="pressKey(num.text)">{{num.text}}</button>
+        </div>  
+      </mat-card-content>
+    </mat-grid-tile>
+  </mat-grid-list>
