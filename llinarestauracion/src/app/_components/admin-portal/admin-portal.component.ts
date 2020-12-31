@@ -9,7 +9,8 @@ import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 })
 export class AdminPortalComponent implements OnInit {
 
-  constructor(private breakpointObserver: BreakpointObserver) {}
+  constructor(private breakpointObserver: BreakpointObserver) { }
+
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
       if (matches) {

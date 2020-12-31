@@ -4,15 +4,15 @@
 
 export const environment = {
   production: false,
-  firebaseConfig : {
-    apiKey: '',
-    authDomain: '',
-    databaseURL: '',
-    projectId: '',
-    storageBucket: '',
-    messagingSenderId: '',
-    appId: '1',
-    measurementId: ''
+  firebaseConfig: {
+    apiKey: "AIzaSyBTmZmHs4DmbDPGzA3QGcQZiOIP4uQHBOc",
+    authDomain: "llinarestauracion.firebaseapp.com",
+    databaseURL: "https://llinarestauracion.firebaseio.com",
+    projectId: "llinarestauracion",
+    storageBucket: "llinarestauracion.appspot.com",
+    messagingSenderId: "749164742937",
+    appId: "1:749164742937:web:f8a9dc5026e7f5d429dd88",
+    measurementId: "G-M18DM7BW0Z"
   }
 };
 

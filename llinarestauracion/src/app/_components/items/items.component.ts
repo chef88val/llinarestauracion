@@ -1,5 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FirebaseService } from '../../firebase.service';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import {
   AngularFirestore,
   AngularFirestoreCollection,
@@ -8,106 +7,107 @@ import {
 import { trace } from '@angular/fire/performance';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { Item } from '../../_models/item.model';
-import { ApiService } from 'src/app/api.service';
 import { Family } from 'src/app/_models/family.model';
 import { Observable } from 'rxjs';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { DialogBoxComponent } from '../dialog-box/dialog-box.component';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { AlertService } from 'src/app/_services/alert.service';
+import { AlertService, ApiService, FirebaseService } from 'src/app/_services';
 import { isNull } from 'util';
 import { isEmpty } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { AngularFireFunctions } from '@angular/fire/functions';
+import { ownComponent } from '..';
+import { endpoints } from 'src/app/_models';
 @Component({
   selector: 'app-items',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './items.component.html',
   styleUrls: ['./items.component.scss']
 })
-export class ItemsComponent implements OnInit {
+export class ItemsComponent implements OnInit, ownComponent {
 
+  familyList: Family[];
+  elementList: Item[] = [];
   @ViewChild('table') table: MatTable<any>;
+  elementForm: any;
+  displayedColumns: string[] = ['Nombre', 'Familia', 'Precio', 'Stock'];
+  isLoadingResults = true;
+  isCreatingAction = false;
+  item$: Observable<Item[]>;
+  dataSource = new MatTableDataSource(this.elementList);
   itemsCollection: AngularFirestoreCollection<Item>;
   items: Observable<any[]>;
   familyCollectionR: AngularFirestoreCollection<Family>;
   familys: Observable<Family[]>;
   private itemsFamily: AngularFirestoreDocument<Item>;
-  displayedColumns: string[] = ['Nombre', 'familiaNombre'];
-  itemList: Item[] = [];
-  familyList: Family[];
-  isLoadingResults = true;
-  isCreatingAction = false;
   itemCollectionRef: AngularFirestoreDocument<Item>;
-  item$: Observable<Item[]>;
-  dataSource = new MatTableDataSource(this.itemList);
   dialog: any;
 
-  elementForm: FormGroup;
-  loading = false;
   submitted = false;
   returnUrl: string;
-  nombreControl: FormControl = new FormControl('', [Validators.required]);
-  familiaControl: FormControl = new FormControl('', [Validators.required]);
   constructor(
     private formBuilder: FormBuilder,
     private api: FirebaseService,
     private afs: AngularFirestore,
     private db: AngularFireDatabase,
     private alertService: AlertService,
-    private fns: AngularFireFunctions
-    ) {
-    /*this.familyCollectionRef = this.api.collection<Family>('famliy');
-    this.family = this.familyCollectionRef.valueChanges();*/
-    /*this.itemCollectionRef = api.doc<Item>('user/david');
-    this.item$ = this.itemCollectionRef.collection<Family>('famliy').valueChanges();
-    this.items = api.collection<Item>('item');*/
-    this.familyList = [];
-    this.familyList.push(new Family());
-    this.familyList = this.api.getFamilys();
+    private fns: AngularFireFunctions,
+    private changeDetectorRef: ChangeDetectorRef) {
+      changeDetectorRef.detach()
+
+      /*this.familyCollectionRef = this.api.collection<Family>(endpoints._family);
+      this.family = this.familyCollectionRef.valueChanges();*/
+      /*this.itemCollectionRef = api.doc<Item>('user/david');
+      this.item$ = this.itemCollectionRef.collection<Family>(endpoints._family).valueChanges();
+      this.items = api.collection<Item>('item');*/
+      this.familyList = [];
+  }
+  clickHandler() {
+    this.changeDetectorRef.detectChanges()
+  }
+  //this.familyList = this.api.getFamilys();
+
+  displayWith(value: any): string {
+    throw new Error("Method not implemented.");
+  }
+  createElement(state: boolean): void {
+    throw new Error("Method not implemented.");
   }
 
   ngOnInit(): void {
     console.log('Suebn los cambios????');
-    const callable = this.fns.httpsCallable('sendEmail');
-    callable({ dest: 'jsm.multimedia@gmail.com' }).toPromise().then(res => {
-      // Read result of the Cloud Function.
-      //var sanitizedMessage = result.data.text;
-      console.log(res);
-    }).catch(error => {
-      // Getting the Error details.
-      /*var code = error.code;
-      var message = error.message;
-      var details = error.details;   */
-      console.log(error);
-    });
+
     this.elementForm = this.formBuilder.group({
-      nombre: ['', Validators.required],
-      familia: ['', Validators.required],
-      nombreControl: this.nombreControl,
-      familiaControl: this.familiaControl
+      name: ['', Validators.required],
+      family: ['', Validators.required],
+      price: [0, Validators.required],
+      stock: [0, Validators.required]
     });
     this.afs.collection('item').snapshotChanges().subscribe((actions) => {
       actions.forEach((a) => {
         const data = a.payload.doc.data() as Item;
 
-        const familia: Family = new Family();
-        this.afs.collection('famliy').doc(data.familia.id).get().toPromise().then(dat => {
-          familia.id = data.familia.id;
+        const family: Family = new Family();
+        this.afs.collection(endpoints._family).doc(data.Family.id).get().toPromise().then(dat => {
+          family.id = data.Family.id;
         }).then(dd => {
-          this.afs.collection('famliy').doc(data.familia.id).get().toPromise().then(dd => {
-            familia.Nombre = dd.data().Nombre;
+          this.afs.collection(endpoints._family).doc(data.Family.id).get().toPromise().then(dd => {
+            family.Name = dd.data().Name;
           });
         });
-        this.itemList.push({
+        this.elementList.push({
           id: a.payload.doc.id,
-          Nombre: data.Nombre,
-          familia,
-          familiaNombre: familia.Nombre // this.api.getFamilyById(data.familia.id).Nombre
+          Name: data.Name,
+          Family: family,
+          familyName: family.Name, // this.api.getFamilyById(data.Family.id).Name
+          price: data.price,
+          stock: data.stock
         });
       });
       this.isLoadingResults = false;
-      this.dataSource.data = this.itemList;
-      // this.table.dataSource = this.itemList;
+      this.dataSource.data = this.elementList;
+      // this.table.dataSource = this.elementList;
       // this.table.renderRows();
     });
   }
@@ -118,22 +118,24 @@ export class ItemsComponent implements OnInit {
   }
 
   addElement(state: boolean) {
+
+    this.isCreatingAction = state;
     if (this.familyList.length < 1) {
-      this.afs.collection('family').get().subscribe(ac => {
-        ac.forEach(a => {
-        });
-      });
-      /*this.api.getElements('family').then(actions => {
+      /* const newF: Family = new Family();
+       newF.id = '123456';
+       newF.Name = 'test';
+       this.familyList.push(newF);*/
+      this.api.getElements(endpoints._family).then(actions => {
         console.log(actions);
         actions.forEach(a => {
-          const data = a.payload.doc.data() as Family;
+          const data = a.data() as Family;
+          data.id = a.id;
           this.familyList.push(data);
         });
-      });*/
+      });
     } else {
-      this.f.familiaControl.patchValue(this.familyList[0].id);
-      this.f.familiaControl.setValue(this.familyList[0]);
-      this.isCreatingAction = state;
+      this.f.family.patchValue(this.familyList[0].id);
+      this.f.family.setValue(this.familyList[0]);
     }
   }
   /*
@@ -148,35 +150,55 @@ export class ItemsComponent implements OnInit {
 
   // convenience getter for easy access to form fields
   get f() { return this.elementForm.controls; }
+  beforeSubmit(newElement: Item): boolean {
+    this.dataSource.filter = newElement.Name.trim().toLowerCase();
+    return this.dataSource.data.length > 0
+  }
   onSubmit() {
-    const newItem = new Item();
-    newItem.Nombre = this.f.nombreControl.value;
-    // newItem.familiaRef = this.afs.collection('famliy').doc(this.f.familia.value.id).ref;
-    // newItem.familiaColRef = this.afs.collection('famliy').ref;
-    // newItem.familia.Nombre = this.f.familia.value;
-    // newItem.familiaRef = this.afs.collection('famliy').doc(this.f.familia.value.id);
-    // this.afs.doc('famliy/'+this.f.familia.value.id).get().subscribe(e=> console.log(e));
-    if (isNull(this.f.familiaControl.value) || isNull(this.f.nombreControl.value)){
-      this.alertService.error('Faltan datos');
-    } else if (this.f.familiaControl.value === '' || this.f.nombreControl.value === ''){
-      this.alertService.error('Faltan datos');
-    } else {
-      this.api.createItem({
-        Nombre: this.f.nombreControl.value,
-        familia: this.afs.collection('famliy').doc(this.f.familiaControl.value).ref
-      }).then(res => {
-        this.alertService.success('Item creado...');
-        this.isCreatingAction = false;
-        const familia: Family = this.api.getFamilyById(this.f.familiaControl.value, this.familyList);
-        this.itemList.push({
-          id: res.id,
-          Nombre: this.f.nombreControl.value,
-          familia,
-          familiaNombre: familia.Nombre // this.api.getFamilyById(data.familia.id).Nombre
+    const newElement = new Item();
+    newElement.Name = this.f.name.value;;
+    if (this.beforeSubmit(newElement)) {
+      this.alertService.warning(`existe un item con el nombre ${newElement.Name}`, true)
+      this.alertService.getAlert().subscribe(
+        (data) => {
+          console.log(data);
+          if (data != undefined)
+            this.afterSubmit(data.buttonAction, newElement);
         });
-        this.table.renderRows();
-      });
-    }
+    } else this.afterSubmit(true, newElement);
   }
 
+  afterSubmit(action: boolean, newElement: any) {
+    if (action) {
+      // newElement.familyRef = this.afs.collection(endpoints._family).doc(this.f.family.value.id).ref;
+      // newElement.familyColRef = this.afs.collection(endpoints._family).ref;
+      // newElement.family.Name = this.f.family.value;
+      // newElement.familyRef = this.afs.collection(endpoints._family).doc(this.f.family.value.id);
+      // this.afs.doc('family/'+this.f.family.value.id).get().subscribe(e=> console.log(e));
+      if (isNull(this.f.family.value) || isNull(this.f.name.value)) {
+        this.alertService.error('Faltan datos');
+      } else if (this.f.family.value === '' || this.f.name.value === '') {
+        this.alertService.error('Faltan datos');
+      } else {
+        this.api.createItem({
+          Name: this.f.name.value,
+          family: this.afs.collection(endpoints._family).doc(this.f.family.value).ref
+        }).then(res => {
+          this.alertService.success('Item creado...');
+          this.isCreatingAction = false;
+          const family: Family = this.api.getFamilyById(this.f.family.value, this.familyList);
+          this.elementList.push({
+            id: res.id,
+            Name: this.f.name.value,
+            Family: family,
+            familyName: family.Name, // this.api.getFamilyById(data.Family.id).Name
+            price: this.f.price.value,
+            stock: this.f.stock.value
+          });
+          this.table.renderRows();
+
+        });
+      }
+    }
+  }
 }

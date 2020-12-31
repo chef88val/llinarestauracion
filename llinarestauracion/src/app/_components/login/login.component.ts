@@ -25,6 +25,9 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['/']);
         }
     }
+    ngOnDestroy(): void {
+       console.log("Method not implemented.");
+    }
 
     ngOnInit() {
         this.loginForm = this.formBuilder.group({
@@ -51,9 +54,12 @@ export class LoginComponent implements OnInit {
 
         this.authenticationService.loginUP(this.f.username.value, this.f.password.value).then(user => {
             console.log(user);
-            if (user.uid){
+            if ('uid' in user){
                 this.alertService.success('Accediendo...');
                 this.router.navigate(['/home']);
+            } else {
+                this.alertService.error('Usuario o contraseña no coinciden');
+                this.loading = false;
             }
             /*console.log(auth.additionalUserInfo);
             console.log(auth.credential);

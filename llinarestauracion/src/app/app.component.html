@@ -26,7 +26,10 @@
 <div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
 
   <mat-toolbar color="primary" class="example-toolbar">
-    <a (click)="snav.toggle()">
+    <a *ngIf="currentUser != null" (click)="snav.toggle()">
+      <span><img src="https://i.pinimg.com/originals/7f/cc/d4/7fccd4143a51812cfbcff26451e2a113.png" /></span>
+    </a>
+    <a *ngIf="currentUser == null">
       <span><img src="https://i.pinimg.com/originals/7f/cc/d4/7fccd4143a51812cfbcff26451e2a113.png" /></span>
     </a>
     <!-- <button mat-icon-button (click)="snav.toggle()" ></button> -->
@@ -47,7 +50,7 @@
        -->
         <a mat-list-item routerLink="{{nav.routerLink}}" *ngFor="let nav of fillerNav">{{nav.label}}</a>
         <!--class="bottomStick"-->
-        <a  mat-list-item *ngIf="currentUser != null" (click)="logout()">Logout</a>
+        <a mat-list-item *ngIf="currentUser != null" (click)="logout()">Logout</a>
       </mat-nav-list>
     </mat-sidenav>
 

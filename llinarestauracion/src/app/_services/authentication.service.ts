@@ -20,7 +20,7 @@ export class AuthenticationService {
     }
 
     loginLS(username: string, password: string) {
-            return this.http.post<any>(`/users/authenticate`, { username, password })
+        return this.http.post<any>(`/users/authenticate`, { username, password })
             .pipe(map(user => {
                 // login successful if there's a jwt token in the response
                 if (user && user.token) {
@@ -39,9 +39,9 @@ export class AuthenticationService {
             console.log(auth.credential);
             console.log(auth.operationType);
             console.log(auth.user);
-            if (auth.user.uid){
+            if (auth.user.uid) {
                 localStorage.setItem('currentUser', JSON.stringify(auth.user));
-                const us =  new User();
+                const us = new User();
                 //us.l = auth.user.l;
                 us.uid = auth.user.uid;
                 us.email = auth.user.email;

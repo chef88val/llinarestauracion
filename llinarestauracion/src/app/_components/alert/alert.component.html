@@ -1,1 +1,7 @@
-<div *ngIf="message" [ngClass]="message.cssClass">{{message.text}}</div>
+<div *ngIf="message">
+    <div *ngIf="!message.button" [ngClass]="message.cssClass">{{message.text}}</div>
+    <div *ngIf="message.button" [ngClass]="message.cssClass">{{message.text}}
+        <button type="button" class="btn btn-primary" (click)="action(true)"> OK</button>
+        <button type="button" class="btn btn-danger" (click)="action(false)"> NOK</button>
+    </div>
+</div>

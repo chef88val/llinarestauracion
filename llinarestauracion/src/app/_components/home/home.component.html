@@ -17,8 +17,32 @@
     <mat-grid-tile>4</mat-grid-tile>
   </mat-grid-list>
 -->
-<mat-tab-group>
-    <mat-tab label="Productos"> <app-items></app-items></mat-tab>
-    <mat-tab label="Reportes" > <app-report></app-report> </mat-tab>
-    <mat-tab label="Admin"> <app-admin-portal></app-admin-portal> </mat-tab>
-  </mat-tab-group>
+<mat-tab-group mat-align-tabs="center" animationDuration="0ms">
+  <mat-tab label="Clientes" >
+    <app-customer></app-customer>
+  </mat-tab>
+  <mat-tab label="Productos">
+    <app-items></app-items>
+  </mat-tab>
+  <!-- <mat-tab label="Presupuestos">
+    <app-quote></app-quote>
+  </mat-tab>
+  <mat-tab label="Facturas">
+    <app-sale></app-sale>
+  </mat-tab>
+  <mat-tab label="Pedidos">
+    <app-order></app-order>
+  </mat-tab>
+  <mat-tab label="Envios">
+    <app-delivery></app-delivery>
+  </mat-tab>
+  <mat-tab label="Reportes">
+    <app-report></app-report>
+  </mat-tab> -->
+  <mat-tab label="Admin">
+    <app-admin-portal></app-admin-portal>
+  </mat-tab>
+  <mat-tab label="Dashboard">
+    <app-dashboard></app-dashboard>
+  </mat-tab>
+</mat-tab-group>

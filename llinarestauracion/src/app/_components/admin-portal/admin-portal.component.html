@@ -1,7 +1,7 @@
-<div class="grid-container">
-  <h1 class="mat-h1">Dashboard</h1>
+<!-- <div class="grid-container">
+  <h1 class="mat-h1">ADMIN</h1>
   <mat-grid-list cols="2" rowHeight="350px">
-    <mat-grid-tile *ngFor="let card of cards | async" [colspan]="card.cols" [rowspan]="card.rows">
+    <mat-grid-tile *ngFor="let card of cards |async " [colspan]="card.cols" [rowspan]="card.rows">
       <mat-card class="dashboard-card">
         <mat-card-header>
           <mat-card-title>
@@ -22,12 +22,44 @@
           <app-stock></app-stock>
         </mat-card-content>
         <mat-card-content *ngIf="card.title=='Card 3'" class="dashboard-card-content">
-          <app-pedidos></app-pedidos>
+          <app-order></app-order>
         </mat-card-content>
         <mat-card-content *ngIf="card.title=='Card 4'" class="dashboard-card-content">
-          <app-ventas></app-ventas>
+          <app-sale></app-sale>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
   </mat-grid-list>
-</div>
+</div> -->
+<mat-tab-group mat-align-tabs="center" animationDuration="0ms">
+  <mat-tab label="Usuarios">
+    <app-own pluralTag="Usuarios" singleTag="Usuario" endpoint="user"></app-own>
+  </mat-tab>
+  <mat-tab label="Clientes">
+    <app-customer></app-customer>
+  </mat-tab>
+  <mat-tab label="Productos">
+    <app-items></app-items>
+  </mat-tab>
+  <mat-tab label="Presupuestos">
+    <app-quote></app-quote>
+  </mat-tab>
+  <mat-tab label="Facturas">
+    <app-sale></app-sale>
+  </mat-tab>
+  <mat-tab label="Pedidos">
+    <app-order></app-order>
+  </mat-tab>
+  <mat-tab label="Envios">
+    <app-delivery></app-delivery>
+  </mat-tab>
+  <mat-tab label="Reportes">
+    <app-report></app-report>
+  </mat-tab>
+  <mat-tab label="Usuarios">
+    <app-user></app-user>
+  </mat-tab>
+  <mat-tab label="Empresa">
+    <app-company></app-company>
+  </mat-tab>
+</mat-tab-group>

@@ -123,6 +123,11 @@
           }
         }
       }
-    }},
-  "defaultProject": "llinarestauracion"
+    }
+  },
+  "defaultProject": "llinarestauracion",
+  "cli": {
+    "analytics": "false",
+    "__analytics": "24e9354f-55df-4d1b-b5d1-c59db5ee7b28"
+  }
 }

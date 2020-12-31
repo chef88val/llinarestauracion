@@ -1,4 +1,8 @@
 export class Family {
+    $key?: string;
     id?: string;
-    Nombre: string;
+    Name: string;
+    constructor() {
+
+    }
 }

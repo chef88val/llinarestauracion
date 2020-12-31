@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AlertService {
     private subject = new Subject<any>();
     private keepAfterRouteChange = false;
-
+    private subjectAfter: BehaviorSubject<any>;
     constructor(private router: Router) {
         // clear alert messages on route change unless 'keepAfterRouteChange' flag is true
         this.router.events.subscribe(event => {
@@ -23,31 +23,41 @@ export class AlertService {
     }
 
     getAlert(): Observable<any> {
+
         return this.subject.asObservable();
     }
-
-    success(message: string, keepAfterRouteChange = false) {
-        this.keepAfterRouteChange = keepAfterRouteChange;
-        this.subject.next({ type: 'success', text: message });
-        setTimeout(() => {
-            this.clear();
-        }, 6000);
+    setAlert(type: boolean): any {
+        this.subject.next({ buttonAction: type });
+        //return new BehaviorSubject<any>(this.subject).asObservable();;
     }
 
-    error(message: string, keepAfterRouteChange = false) {
+    success(message: string, _button: boolean = false, keepAfterRouteChange = false) {
         this.keepAfterRouteChange = keepAfterRouteChange;
-        this.subject.next({ type: 'error', text: message });
+        this.subject.next({ button: _button, type: 'success', text: message });
         setTimeout(() => {
             this.clear();
         }, 6000);
+        //if(_button) return this.subject.toPromise();
     }
 
-    warning(message: string, keepAfterRouteChange = false) {
+    error(message: string, _button: boolean = false, keepAfterRouteChange = false) {
         this.keepAfterRouteChange = keepAfterRouteChange;
-        this.subject.next({ type: 'warning', text: message });
+        this.subject.next({ button: _button, type: 'error', text: message });
         setTimeout(() => {
             this.clear();
         }, 6000);
+        //if(_button) return this.subject.toPromise();
+    }
+
+    warning(message: string, _button: boolean = false, keepAfterRouteChange = false) {
+        this.keepAfterRouteChange = keepAfterRouteChange;
+        this.subject.next({ button: _button, type: 'warning', text: message });
+        setTimeout(() => {
+            this.clear();
+        }, 6000);
+        //if(_button) return this.subject.toPromise();
+        /*if(_button)
+            this.subject.subscribe((event) => event);*/
     }
 
     clear() {
